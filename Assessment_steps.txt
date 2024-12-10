@@ -1,0 +1,43 @@
+
+Step1:
+Install Terraform and AWS CLI.
+Initialize Terraform in the project directory
+Apply the configuration to provision the infrastructure
+
+Step2:
+Containerize the Web Application:
+Build the Docker image
+
+cmd: docker build -t <container_registry>/web-app:latest
+
+Step3:
+Deploy the Application on Kubernetes:
+Set up and Deploy your kubectl configuration to use the newly created EKS cluster
+cmd:
+aws eks --region us-west-2 update-kubeconfig --name my-eks-cluster
+kubectl apply -f deployment.yaml
+
+Step4:
+Setup Monitoring tool and logging.
+
+Install Prometheus using Helm to monitor the application. First, add the Prometheus Helm chart repository:
+cmd:
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm install prometheus prometheus-community/kube-prometheus-stack
+If your application exposes custom metrics, configure Prometheus to scrape them. Add the following to your deployment.yaml
+prometheus.io/scrape: "true"
+prometheus.io/port: "8080"
+
+Step5:
+Kubernetes manifests for deployment and service.
+
+Deploy your Application.
+cmd:
+kubectl apply -f deployment.yaml
+kubectl apply -f service.yaml
+
+Access the Web Application.
+
+Once the services are deployed, you can access the application via the LoadBalancer external IP.
+cmd: kubectl get svc web-app-service
+
